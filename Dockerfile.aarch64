@@ -1,0 +1,24 @@
+FROM depau/archlinux-daily:aarch64
+
+# Add common build utils and other needed packages
+RUN pacman -Syu --noconfirm base base-devel pacman-contrib git cmake \
+      meson ninja sudo asp pyalpm
+
+# Add builds user
+RUN useradd -mG wheel builder && \
+    echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# Colors and candy
+RUN sed -i 's/^BUILDENV=.*$/BUILDENV=(!distcc color !ccache check !sign)/g' /etc/makepkg.conf && \
+    sed -i 's/^#Color/Color\nILoveCandy/g' /etc/pacman.conf
+
+USER builder
+
+# Add pikaur
+RUN cd /home/builder && \
+    git clone https://aur.archlinux.org/pikaur.git && \
+    cd pikaur && \
+    makepkg -sAc && \
+    sudo pacman --noconfirm -U pikaur*.pkg.* && \
+    cd .. && \
+    rm -Rf pikaur
