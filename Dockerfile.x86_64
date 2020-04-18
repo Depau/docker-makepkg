@@ -2,7 +2,7 @@ FROM depau/archlinux-daily:x86_64
 
 # Add common build utils and other needed packages
 RUN pacman -Syu --noconfirm base base-devel pacman-contrib git cmake \
-      meson ninja sudo asp pyalpm
+      meson ninja sudo go-pie
 
 # Add builds user
 RUN useradd -mG wheel builder && \
@@ -16,9 +16,9 @@ USER builder
 
 # Add pikaur
 RUN cd /home/builder && \
-    git clone https://aur.archlinux.org/pikaur.git && \
-    cd pikaur && \
+    git clone https://aur.archlinux.org/yay.git && \
+    cd yay && \
     makepkg -sAc && \
-    sudo pacman --noconfirm -U pikaur*.pkg.* && \
+    sudo pacman --noconfirm -U yay*.pkg.* && \
     cd .. && \
-    rm -Rf pikaur
+    rm -Rf yay
