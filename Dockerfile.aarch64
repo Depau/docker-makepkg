@@ -22,3 +22,4 @@ RUN cd /home/builder && \
     sudo pacman --noconfirm -U yay*.pkg.* && \
     cd .. && \
     rm -Rf yay
+
